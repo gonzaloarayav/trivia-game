@@ -3,7 +3,7 @@ import { getRandomAnimeCharacter } from "../services/jikanService";
 export function loadGuessSilhouette(container: HTMLElement) {
   container.innerHTML = `
     <div class="card p-3 bg-dark">
-      <h2 class="text-light">🖤 Adivina la Silueta (API)</h2>
+      <h2 class="text-light">🖤 Adivina la Silueta </h2>
       <div id="progress" class="text-light mb-2"></div>
       <div id="loading" class="text-light mb-2" style="font-style: italic;">Cargando imagen...</div>
       <div id="silhouette-container" class="mb-3 text-center">
