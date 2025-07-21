@@ -4,7 +4,7 @@ import { getRandomAnimeCharacter } from "../services/jikanService";
 export function loadGuessSilhouette(container: HTMLElement) {
   container.innerHTML = `
     <div class="card p-3 bg-dark">
-      <h2 class="text-light">🖤 Adivina la Silueta </h2>
+      <h2 class="text-light">Adivina la Silueta </h2>
       <div id="progress" class="text-light mb-2"></div>
       <div id="loading" class="text-light mb-2" style="font-style: italic;">Cargando imagen...</div>
       <div id="silhouette-container" class="mb-3 text-center">
@@ -31,7 +31,7 @@ export function loadGuessSilhouette(container: HTMLElement) {
   let score = 0;
   const totalQuestions = 20;
 
-  const gridSize = 4; // 4x4 bloques
+  const gridSize = 3; // 4x4 bloques
   let coveredBlocks: { x: number; y: number }[] = [];
   let img: HTMLImageElement;
 
@@ -115,7 +115,7 @@ export function loadGuessSilhouette(container: HTMLElement) {
 
     // Si no quedan bloques, mostrar respuesta y avanzar automáticamente
     if (coveredBlocks.length === 0) {
-      resultP.innerHTML = `📢 Era: <strong>${currentCharacter?.name}</strong>`;
+      resultP.innerHTML = `📢 <strong class="text-white"> Era: ${currentCharacter?.name}</strong>`;
       submitBtn.disabled = true;
       answerInput.disabled = true;
       nextBtn.disabled = true; // Bloquear “Siguiente”
@@ -154,7 +154,7 @@ export function loadGuessSilhouette(container: HTMLElement) {
       revealBlock();
       score--; // Penalizar
       if (coveredBlocks.length > 0) {
-        resultP.textContent = "❌ Incorrecto, parte revelada.";
+        resultP.innerHTML = `❌ <strong class="text-white"> Incorrecto, parte revelada. </strong>`;
       }
     }
   }
