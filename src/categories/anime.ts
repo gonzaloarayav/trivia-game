@@ -8,7 +8,8 @@ export const animeCharacters: Character[] = [
       "Tiene el pelo rubio.",
       "Es de Konoha.",
       "Tiene un zorro dentro de él."
-    ]
+    ],
+    image: "naruto.png"
   },
   {
     name: "Goku",
@@ -17,7 +18,8 @@ export const animeCharacters: Character[] = [
       "Es muy fuerte.",
       "Se transforma en Super Saiyajin.",
       "Le encanta comer."
-    ]
+    ],
+    image: "naruto.png"
   },
   {
     name: "Luffy",
@@ -26,7 +28,8 @@ export const animeCharacters: Character[] = [
       "Tiene un sombrero de paja.",
       "Su poder es estirar su cuerpo.",
       "Busca el tesoro llamado One Piece."
-    ]
+    ],
+    image: "naruto.png"
   },
   {
     name: "Saitama",
@@ -35,7 +38,8 @@ export const animeCharacters: Character[] = [
       "Puede derrotar a cualquiera con un solo golpe.",
       "Le aburre la vida de héroe.",
       "Protagonista de One Punch Man."
-    ]
+    ],
+    image: "naruto.png"
   },
   {
     name: "Ichigo Kurosaki",
@@ -44,7 +48,8 @@ export const animeCharacters: Character[] = [
       "Es un shinigami sustituto.",
       "Tiene pelo naranja.",
       "Protege a sus amigos de hollows."
-    ]
+    ],
+    image: "naruto.png"
   },
   {
     name: "Edward Elric",
@@ -53,7 +58,8 @@ export const animeCharacters: Character[] = [
       "Tiene brazo y pierna mecánicos.",
       "Busca la piedra filosofal.",
       "Hermano menor de Alphonse."
-    ]
+    ],
+    image: "naruto.png"
   },
   {
     name: "Mikasa Ackerman",
@@ -62,7 +68,8 @@ export const animeCharacters: Character[] = [
       "Protege a Eren.",
       "Tiene cabello corto negro.",
       "Pertenece a los ataques contra titanes."
-    ]
+    ],
+    image: "naruto.png"
   },
   {
     name: "Light Yagami",
@@ -71,7 +78,9 @@ export const animeCharacters: Character[] = [
       "Se hace llamar Kira.",
       "Quiere crear un mundo sin crimen.",
       "Es muy inteligente."
-    ]
+    ],
+    image: "naruto.png"
+
   },
   {
     name: "Natsu Dragneel",
@@ -80,7 +89,9 @@ export const animeCharacters: Character[] = [
       "Busca a su dragón padre.",
       "Pertenece a Fairy Tail.",
       "Muy fuerte y valiente."
-    ]
+    ],
+    image: "naruto.png"
+
   },
   {
     name: "Sailor Moon",
@@ -89,6 +100,7 @@ export const animeCharacters: Character[] = [
       "Lleva uniforme escolar y diadema.",
       "Protege la tierra junto a sus amigas.",
       "Su nombre real es Usagi Tsukino."
-    ]
+    ],
+    image: "naruto.png"
   }
 ];
