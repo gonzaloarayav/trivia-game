@@ -1,3 +1,4 @@
+import { similarity } from "../helpers/verificadores";
 import { getRandomAnimeCharacter } from "../services/jikanService";
 
 export function loadGuessSilhouette(container: HTMLElement) {
@@ -11,11 +12,11 @@ export function loadGuessSilhouette(container: HTMLElement) {
       </div>
       <input type="text" id="answer" class="form-control mb-2" placeholder="¿Quién es?">
       <button id="submit" class="btn btn-warning w-100 mb-2">Responder</button>
-      <button id="next" class="btn btn-outline-light w-100 mb-2">Siguiente</button>
+      <button id="next" class="btn btn-outline-light w-100 mb-2" disabled>Siguiente</button>
       <p id="result" class="mt-2"></p>
     </div>
   `;
-  
+
   const silhouetteCanvas = container.querySelector("#silhouetteCanvas") as HTMLCanvasElement;
   const ctx = silhouetteCanvas.getContext("2d")!;
   const loadingDiv = container.querySelector("#loading") as HTMLDivElement;
@@ -25,14 +26,12 @@ export function loadGuessSilhouette(container: HTMLElement) {
   const resultP = container.querySelector("#result") as HTMLParagraphElement;
   const progressDiv = container.querySelector("#progress") as HTMLDivElement;
 
-
   let currentCharacter: { name: string; image: string } | null = null;
   let currentIndex = 0;
   let score = 0;
-  const totalQuestions = 10;
+  const totalQuestions = 20;
 
-  // Configuración del efecto mosaico
-  const gridSize = 4; // 4x4 = 16 bloques
+  const gridSize = 4; // 4x4 bloques
   let coveredBlocks: { x: number; y: number }[] = [];
   let img: HTMLImageElement;
 
@@ -41,7 +40,7 @@ export function loadGuessSilhouette(container: HTMLElement) {
   }
 
   async function loadNewCharacter() {
-    loadingDiv.style.display = "block";    // Mostrar loading
+    loadingDiv.style.display = "block";
     resultP.textContent = "";
     answerInput.value = "";
     answerInput.disabled = true;
@@ -56,12 +55,11 @@ export function loadGuessSilhouette(container: HTMLElement) {
       img.src = currentCharacter.image;
 
       img.onload = () => {
-        loadingDiv.style.display = "none"; // Ocultar loading
+        loadingDiv.style.display = "none";
 
         silhouetteCanvas.width = img.width;
         silhouetteCanvas.height = img.height;
 
-        // Inicializar bloques cubiertos (todos)
         coveredBlocks = [];
         for (let i = 0; i < gridSize; i++) {
           for (let j = 0; j < gridSize; j++) {
@@ -70,19 +68,15 @@ export function loadGuessSilhouette(container: HTMLElement) {
         }
         coveredBlocks = shuffleArray(coveredBlocks);
 
-        // Mostrar imagen completa primero
         ctx.drawImage(img, 0, 0);
 
-        // Revelar sólo 1 bloque (quitarlo de coveredBlocks)
+        // Revela un bloque inicial
         coveredBlocks.pop();
-
-        // Cubrir el resto
         coverImage();
 
         progressDiv.textContent = `Pregunta ${currentIndex + 1} / ${totalQuestions} | Puntos: ${score}`;
         answerInput.disabled = false;
         submitBtn.disabled = false;
-        nextBtn.disabled = false;
         answerInput.focus();
       };
 
@@ -114,9 +108,26 @@ export function loadGuessSilhouette(container: HTMLElement) {
 
   function revealBlock() {
     if (coveredBlocks.length > 0) {
-      ctx.drawImage(img, 0, 0); // Dibuja la imagen completa
-      coveredBlocks.pop();      // Descubre un bloque
-      coverImage();             // Cubre los bloques restantes
+      ctx.drawImage(img, 0, 0);
+      coveredBlocks.pop();
+      coverImage();
+    }
+
+    // Si no quedan bloques, mostrar respuesta y avanzar automáticamente
+    if (coveredBlocks.length === 0) {
+      resultP.innerHTML = `📢 Era: <strong>${currentCharacter?.name}</strong>`;
+      submitBtn.disabled = true;
+      answerInput.disabled = true;
+      nextBtn.disabled = true; // Bloquear “Siguiente”
+
+      setTimeout(() => {
+        currentIndex++;
+        if (currentIndex < totalQuestions) {
+          loadNewCharacter();
+        } else {
+          showFinalScore();
+        }
+      }, 2000);
     }
   }
 
@@ -124,29 +135,26 @@ export function loadGuessSilhouette(container: HTMLElement) {
     const userAnswer = answerInput.value.trim().toLowerCase();
     const correctAnswer = currentCharacter?.name.toLowerCase() ?? "";
 
-    if (userAnswer === correctAnswer) {
+    if (similarity(userAnswer, correctAnswer) > 0.7) {
       resultP.textContent = "✅ ¡Correcto!";
       score++;
       currentIndex++;
-      if (currentIndex < totalQuestions) {
-        setTimeout(loadNewCharacter, 800);
-      } else {
-        showFinalScore();
-      }
-    } else {
-      resultP.textContent = "❌ Incorrecto, parte revelada.";
-      revealBlock();
+      submitBtn.disabled = true;
+      answerInput.disabled = true;
+      nextBtn.disabled = true;
 
-      if (coveredBlocks.length === 0) {
-        resultP.textContent = `📢 Era: ${currentCharacter?.name}`;
-        setTimeout(() => {
-          currentIndex++;
-          if (currentIndex < totalQuestions) {
-            loadNewCharacter();
-          } else {
-            showFinalScore();
-          }
-        }, 1500);
+      setTimeout(() => {
+        if (currentIndex < totalQuestions) {
+          loadNewCharacter();
+        } else {
+          showFinalScore();
+        }
+      }, 800);
+    } else {
+      revealBlock();
+      score--; // Penalizar
+      if (coveredBlocks.length > 0) {
+        resultP.textContent = "❌ Incorrecto, parte revelada.";
       }
     }
   }
@@ -170,11 +178,9 @@ export function loadGuessSilhouette(container: HTMLElement) {
 
   submitBtn.addEventListener("click", () => checkAnswer());
   nextBtn.addEventListener("click", () => {
-    currentIndex++;
-    if (currentIndex < totalQuestions) {
-      loadNewCharacter();
-    } else {
-      showFinalScore();
+    // Solo permitir avanzar si quedan bloques
+    if (coveredBlocks.length > 0) {
+      resultP.textContent = "⚠️ Aún puedes intentar descubrirlo.";
     }
   });
   answerInput.addEventListener("keypress", (e) => {
