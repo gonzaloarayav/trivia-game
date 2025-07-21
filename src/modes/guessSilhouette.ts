@@ -4,11 +4,11 @@ import { getRandomAnimeCharacter } from "../services/jikanService";
 export function loadGuessSilhouette(container: HTMLElement) {
   container.innerHTML = `
     <div class="card p-3 bg-dark">
-      <h2 class="text-light">Adivina la Silueta </h2>
+      <h2 class="text-light">Adivina la Silueta</h2>
       <div id="progress" class="text-light mb-2"></div>
       <div id="loading" class="text-light mb-2" style="font-style: italic;">Cargando imagen...</div>
       <div id="silhouette-container" class="mb-3 text-center">
-        <canvas id="silhouetteCanvas" class="img-fluid rounded shadow"></canvas>
+        <canvas id="silhouetteCanvas" class="img-fluid rounded shadow" width="300" height="300"></canvas>
       </div>
       <input type="text" id="answer" class="form-control mb-2" placeholder="¿Quién es?">
       <button id="submit" class="btn btn-warning w-100 mb-2">Responder</button>
@@ -31,7 +31,7 @@ export function loadGuessSilhouette(container: HTMLElement) {
   let score = 0;
   const totalQuestions = 20;
 
-  const gridSize = 3; // 4x4 bloques
+  const gridSize = 3; 
   let coveredBlocks: { x: number; y: number }[] = [];
   let img: HTMLImageElement;
 
@@ -57,8 +57,12 @@ export function loadGuessSilhouette(container: HTMLElement) {
       img.onload = () => {
         loadingDiv.style.display = "none";
 
-        silhouetteCanvas.width = img.width;
-        silhouetteCanvas.height = img.height;
+        // 🔥 Establece tamaño fijo del canvas
+        silhouetteCanvas.width = 300;
+        silhouetteCanvas.height = 300;
+
+        // 🔥 Ajusta imagen para cubrir el canvas (crop centrado)
+        drawCenteredImage(img);
 
         coveredBlocks = [];
         for (let i = 0; i < gridSize; i++) {
@@ -67,8 +71,6 @@ export function loadGuessSilhouette(container: HTMLElement) {
           }
         }
         coveredBlocks = shuffleArray(coveredBlocks);
-
-        ctx.drawImage(img, 0, 0);
 
         // Revela un bloque inicial
         coveredBlocks.pop();
@@ -96,6 +98,30 @@ export function loadGuessSilhouette(container: HTMLElement) {
     }
   }
 
+  function drawCenteredImage(image: HTMLImageElement) {
+    const canvasWidth = silhouetteCanvas.width;
+    const canvasHeight = silhouetteCanvas.height;
+
+    const imgRatio = image.width / image.height;
+    const canvasRatio = canvasWidth / canvasHeight;
+
+    let sx = 0, sy = 0, sWidth = image.width, sHeight = image.height;
+
+    // 🔥 Corta la imagen para que sea cuadrada (centrada)
+    if (imgRatio > canvasRatio) {
+      // Imagen más ancha
+      sWidth = image.height * canvasRatio;
+      sx = (image.width - sWidth) / 2;
+    } else {
+      // Imagen más alta
+      sHeight = image.width / canvasRatio;
+      sy = (image.height - sHeight) / 2;
+    }
+
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    ctx.drawImage(image, sx, sy, sWidth, sHeight, 0, 0, canvasWidth, canvasHeight);
+  }
+
   function coverImage() {
     const blockWidth = silhouetteCanvas.width / gridSize;
     const blockHeight = silhouetteCanvas.height / gridSize;
@@ -108,17 +134,16 @@ export function loadGuessSilhouette(container: HTMLElement) {
 
   function revealBlock() {
     if (coveredBlocks.length > 0) {
-      ctx.drawImage(img, 0, 0);
+      drawCenteredImage(img); // 🔥 Redibuja la imagen centrada
       coveredBlocks.pop();
       coverImage();
     }
 
-    // Si no quedan bloques, mostrar respuesta y avanzar automáticamente
     if (coveredBlocks.length === 0) {
       resultP.innerHTML = `📢 <strong class="text-white"> Era: ${currentCharacter?.name}</strong>`;
       submitBtn.disabled = true;
       answerInput.disabled = true;
-      nextBtn.disabled = true; // Bloquear “Siguiente”
+      nextBtn.disabled = true;
 
       setTimeout(() => {
         currentIndex++;
@@ -152,7 +177,7 @@ export function loadGuessSilhouette(container: HTMLElement) {
       }, 800);
     } else {
       revealBlock();
-      score--; // Penalizar
+      score--;
       if (coveredBlocks.length > 0) {
         resultP.innerHTML = `❌ <strong class="text-white"> Incorrecto, parte revelada. </strong>`;
       }
@@ -178,7 +203,6 @@ export function loadGuessSilhouette(container: HTMLElement) {
 
   submitBtn.addEventListener("click", () => checkAnswer());
   nextBtn.addEventListener("click", () => {
-    // Solo permitir avanzar si quedan bloques
     if (coveredBlocks.length > 0) {
       resultP.textContent = "⚠️ Aún puedes intentar descubrirlo.";
     }
