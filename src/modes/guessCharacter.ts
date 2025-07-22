@@ -1,4 +1,5 @@
 import { categories } from "../data";
+import { similarity } from "../helpers/verificadores";
 
 export function loadGuessCharacter(container: HTMLElement) {
   container.innerHTML = `
@@ -72,8 +73,8 @@ export function loadGuessCharacter(container: HTMLElement) {
     const userAnswer = answerInput.value.trim().toLowerCase();
     const correctAnswer = shuffledCharacters[currentIndex].name.toLowerCase();
 
-    if (userAnswer === correctAnswer) {
-        resultP.textContent = "✅ ¡Correcto! 🎉";
+    if (similarity(userAnswer, correctAnswer) > 0.6) {
+        resultP.innerHTML = `✅ <strong class="text-white"> ¡Correcto! </strong> 🎉`;
         score++;
         currentIndex++;
         currentHintIndex = 0;
@@ -85,7 +86,7 @@ export function loadGuessCharacter(container: HTMLElement) {
         }
         // Mostrar las pistas acumuladas actualizadas
         showHint();
-        resultP.textContent = "❌ Incorrecto, intenta de nuevo.";
+        resultP.innerHTML = `❌ <strong class="text-white"> Incorrecto, intenta de nuevo. </strong>`;
         }
   }
 

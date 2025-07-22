@@ -14,8 +14,16 @@ export async function getRandomAnimeCharacter() {
     // Escoger un personaje aleatorio
     const randomCharacter = charactersData.data[Math.floor(Math.random() * charactersData.data.length)];
 
+    // Procesar el nombre para invertirlo si viene con coma
+    let processedName = randomCharacter.character.name;
+    if (processedName.includes(",")) {
+      const [lastName, firstName] = processedName.split(",").map((s: any) => s.trim());
+      processedName = `${firstName} ${lastName}`;
+    }
+
+    console.log("Personaje obtenido:", processedName);
     return {
-      name: randomCharacter.character.name,
+      name: processedName,
       image: randomCharacter.character.images.webp.image_url // Imagen del personaje
     };
   } catch (error) {
