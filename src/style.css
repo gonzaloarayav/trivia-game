@@ -31,8 +31,8 @@ body {
 .card {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
   border-radius: 10px;
+  padding: 2em;
 }
-
 
 h1 {
   font-size: 3.2em;
@@ -59,10 +59,6 @@ h1 {
   filter: drop-shadow(0 0 2em #3178c6aa);
 }
 
-.card {
-  padding: 2em;
-}
-
 .read-the-docs {
   color: #888;
 }
@@ -86,6 +82,7 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Light mode */
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -96,5 +93,54 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
+  }
+}
+
+/* ✅ Responsive Mobile Adjustments */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.2em;
+  }
+
+  #app {
+    padding: 1rem;
+  }
+
+  .logo {
+    height: 4em;
+    padding: 1em;
+  }
+
+  .card {
+    padding: 1em;
+  }
+
+  button {
+    padding: 0.5em 1em;
+    font-size: 0.9em;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.8em;
+  }
+
+  #app {
+    padding: 0.8rem;
+  }
+
+  .logo {
+    height: 3.5em;
+    padding: 0.8em;
+  }
+
+  .card {
+    padding: 0.8em;
+  }
+
+  button {
+    width: 100%; /* Botón ocupa ancho completo */
+    font-size: 0.85em;
   }
 }

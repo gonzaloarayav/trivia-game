@@ -1,3 +1,5 @@
+import { traducirInglesAEspanol } from "./openaiService";
+
 const JIKAN_BASE_URL = "https://api.jikan.moe/v4";
 
 export async function getRandomAnimeCharacter() {
@@ -14,7 +16,6 @@ export async function getRandomAnimeCharacter() {
 
     const charactersData = await charactersResponse.json();
 
-    console.log(charactersData)
 
     // Escoger un personaje aleatorio
     // const randomCharacter = charactersData.data[Math.floor(Math.random() * charactersData.data.length)];
@@ -32,6 +33,12 @@ export async function getRandomAnimeCharacter() {
     //   name: processedName,
     //   image: randomCharacter.character.images.webp.image_url // Imagen del personaje
     // };
+
+
+    const characterAbout = traducirInglesAEspanol(charactersData.data.about) || "Descripción no disponible";
+
+    console.log(characterAbout)
+
     return {
       name: charactersData.data.name,
       image: charactersData.data.images.jpg.image_url // Imagen del personaje
