@@ -1,19 +1,6 @@
 import { similarity } from "../helpers/verificadores";
 import { getRandomAnimeCharacter } from "../services/jikanService";
 
-type GameState = {
-  difficulty: string,
-  totalQuestions: number,
-  enableTimer: boolean,
-  totalLives: number,
-  currentIndex: number,
-  score: number,
-  lives: number,
-  coveredBlocks: { x: number; y: number }[],
-  currentCharacter: { name: string; image: string } | null,
-  lastSaved: number,
-};
-
 export function loadGuessSilhouette(container: HTMLElement) {
   // 🔥 Pantalla de configuración inicial
   container.innerHTML = `
@@ -38,7 +25,7 @@ export function loadGuessSilhouette(container: HTMLElement) {
       </div>
 
       <label for="livesCount" class="form-label">Cantidad de Vidas:</label>
-      <input type="number" id="livesCount" class="form-control mb-3" value="3" min="1" max="10">
+      <input type="number" id="livesCount" class="form-control mb-3" value="50" min="1" max="10">
       
       <button id="startGame" class="btn btn-warning w-100 mt-3">🚀 Empezar</button>
     </div>
